@@ -31,13 +31,16 @@ RUN curl -Lo /tmp/ntqq.deb $( \
     rm -rf /var/lib/apt/lists/*
 VOLUME [ "/root/.config/QQ" ]
 
+ENV LITELOADERQQNT_PROFILE=/var/LiteLoaderQQNT
 RUN curl -Lo /tmp/LiteLoaderQQNT.zip $( \
     curl 'https://api.github.com/repos/LiteLoaderQQNT/LiteLoaderQQNT/releases/latest' | \
     sed -rn 's/^.*browser_download_url.*(https:.*LiteLoaderQQNT\.zip).*$/\1/p' \
     ) && \
     unzip /tmp/LiteLoaderQQNT.zip -d /opt/QQ/resources/app/LiteLoader && \
     sed -i '1s/^/require("\/opt\/QQ\/resources\/app\/LiteLoader");\n/' /opt/QQ/resources/app/app_launcher/index.js && \
-    rm /tmp/LiteLoaderQQNT.zip
+    rm /tmp/LiteLoaderQQNT.zip && \
+    mkdir -p ${LITELOADERQQNT_PROFILE}
+VOLUME ${LITELOADERQQNT_PROFILE}
 
 ENV DISPLAY=:0
 EXPOSE 80
