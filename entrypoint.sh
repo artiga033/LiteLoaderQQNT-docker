@@ -9,6 +9,9 @@ _term() {
 }
 trap _term SIGTERM
 
+# remove X Display lock if any
+rm /tmp/.X0-lock
+
 # Xvfb for a virtual display
 Xvfb :0 -screen 0 1920x1080x24 -listen tcp -ac &
 # vnc server
@@ -22,6 +25,9 @@ icewm &
 
 # Wait for any process to exit
 wait -n
+
+# remove X Display lock if any
+rm /tmp/.X0-lock
 
 # Exit with status of process that exited first
 exit $?
