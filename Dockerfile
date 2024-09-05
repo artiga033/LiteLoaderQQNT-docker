@@ -8,8 +8,8 @@ RUN apt-get update &&\
 
 RUN sed -i '/zh_CN.UTF-8/s/^# //g' /etc/locale.gen && \
     locale-gen
-ENV LANG zh_CN.UTF-8  
-ENV LC_ALL zh_CN.UTF-8 
+ENV LANG=zh_CN.UTF-8  
+ENV LC_ALL=zh_CN.UTF-8 
 
 RUN curl -Lo /tmp/websockify-rs.zip $( \
     curl 'https://api.github.com/repos/artiga033/websockify-rs/releases/latest' | \
@@ -19,10 +19,13 @@ RUN curl -Lo /tmp/websockify-rs.zip $( \
     chmod +x /usr/local/bin/websockify-rs && \
     rm /tmp/websockify-rs.zip
 
-RUN curl -Lo /tmp/ntqq.deb $( \
-    curl 'https://cdn-go.cn/qq-web/im.qq.com_new/latest/rainbow/linuxQQDownload.js' | \
-    sed 's/,/,\n/g' | \
-    sed -rn 's/^.*x64DownloadUrl.*(https:.*.deb).*$/\1/p' \
+RUN rainbowConfigUrl=$(curl https://im.qq.com/linuxqq/index.shtml | \
+    sed -rn 's/^.*rainbowConfigUrl = "(.*)";.*$/\1/p' | \
+    head -n 1) && \
+    curl -Lo /tmp/ntqq.deb $( \
+        curl $rainbowConfigUrl | \
+        sed 's/,/,\n/g' | \
+        sed -rn 's/^.*x64DownloadUrl.*(https:.*.deb).*$/\1/p' \
     ) && \
     apt-get update && apt-get install -y /tmp/ntqq.deb && \
     # required for qq
