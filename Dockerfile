@@ -40,7 +40,8 @@ RUN curl -Lo /tmp/LiteLoaderQQNT.zip $( \
     sed -rn 's/^.*browser_download_url.*(https:.*LiteLoaderQQNT\.zip).*$/\1/p' \
     ) && \
     unzip /tmp/LiteLoaderQQNT.zip -d /opt/QQ/resources/app/LiteLoader && \
-    sed -i '1s/^/require("\/opt\/QQ\/resources\/app\/LiteLoader");\n/' /opt/QQ/resources/app/app_launcher/index.js && \
+    echo 'require(String.raw`/opt/QQ/resources/app/LiteLoader`)' > /opt/QQ/resources/app/app_launcher/loader.js && \
+    sed -i 's/"main": "\(.*\)",/"main": ".\/app_launcher\/loader.js",/' /opt/QQ/resources/app/package.json && \
     rm /tmp/LiteLoaderQQNT.zip && \
     mkdir -p ${LITELOADERQQNT_PROFILE}
 VOLUME ${LITELOADERQQNT_PROFILE}
